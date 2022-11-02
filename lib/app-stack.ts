@@ -12,5 +12,16 @@ export class AppStack extends cdk.Stack {
       handler: 'index.handler',
       code: lambda.Code.fromAsset('lambda/')
     });
+    
+		// Agent Layer 추가
+    const agentArn = 'arn:aws:lambda:ap-northeast-1:800880067056:layer:CloudOne-ApplicationSecurity-nodejs14_x:1';
+    const agentLayer = lambda.LayerVersion.fromLayerVersionArn(this, 'TrendMicroAgent', agentArn);
+    fn.addLayers(agentLayer)
+    
+    // 환경 변수 추가
+    fn.addEnvironment('AWS_LAMBDA_EXEC_WRAPPER', '/opt/trend_app_protect');
+    fn.addEnvironment('TREND_AP_HELLO_URL', 'https://agents.jp-1.application.cloudone.trendmicro.com/');
+    fn.addEnvironment('TREND_AP_KEY', 'bedb15ad-98c5-4bac-92cd-206a7f5b5365');
+    fn.addEnvironment('TREND_AP_SECRET', '64816775-2a55-4cd8-bc02-664ed5ff7946');
   }
 }
